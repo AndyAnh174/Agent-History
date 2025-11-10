@@ -41,7 +41,18 @@ class Settings(BaseSettings):
         if not self.allow_origins:
             return ["*"]
         if isinstance(self.allow_origins, str):
-            return [origin.strip() for origin in self.allow_origins.split(",") if origin.strip()]
+            if self.allow_origins.strip() == "*":
+                return ["*"]
+            origins = [origin.strip() for origin in self.allow_origins.split(",") if origin.strip()]
+            # Always allow localhost origins for development
+            if "*" not in origins:
+                origins.extend([
+                    "http://localhost:5500",
+                    "http://127.0.0.1:5500",
+                    "http://localhost:3000",
+                    "http://127.0.0.1:3000",
+                ])
+            return origins
         return self.allow_origins
 
     @property

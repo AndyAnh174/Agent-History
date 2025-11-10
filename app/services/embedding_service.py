@@ -21,23 +21,34 @@ class EmbeddingService:
         if not payload["texts"]:
             return []
 
-        async with httpx.AsyncClient(timeout=self.timeout) as client:
-            response = await client.post(
-                self.endpoint,
-                json=payload,
-                headers={
-                    "accept": "application/json",
-                    "Content-Type": "application/json",
-                },
-            )
-            response.raise_for_status()
-            data = response.json()
+        try:
+            async with httpx.AsyncClient(timeout=self.timeout) as client:
+                response = await client.post(
+                    self.endpoint,
+                    json=payload,
+                    headers={
+                        "accept": "application/json",
+                        "Content-Type": "application/json",
+                    },
+                )
+                response.raise_for_status()
+                data = response.json()
 
-        embeddings = data.get("embeddings")
-        if not embeddings:
-            raise ValueError("Embedding API returned no vectors.")
-        return embeddings
+            embeddings = data.get("embeddings")
+            if not embeddings:
+                raise ValueError("Embedding API returned no vectors.")
+            return embeddings
+        except httpx.TimeoutException:
+            raise ValueError(f"Embedding API timeout after {self.timeout}s")
+        except httpx.HTTPStatusError as e:
+            raise ValueError(f"Embedding API error: {e.response.status_code} - {e.response.text}")
+        except Exception as e:
+            raise ValueError(f"Embedding API error: {str(e)}")
 
     async def embed_text(self, text: str) -> List[float]:
+        if not text or not text.strip():
+            raise ValueError("Text cannot be empty")
         embeddings = await self.embed_texts([text])
+        if not embeddings or len(embeddings) == 0:
+            raise ValueError("No embedding returned")
         return embeddings[0]

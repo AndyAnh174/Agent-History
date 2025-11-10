@@ -42,32 +42,59 @@ class RagPipeline:
         self.mongo = mongo_service
 
     async def answer_question(self, question: str) -> Dict[str, Any]:
-        vector = await self.embedding.embed_text(question)
-        hits = self.qdrant.similarity_search(
-            vector,
-            limit=self.settings.rag_top_k,
-            score_threshold=self.settings.rag_score_threshold,
-        )
-        context = self._format_context(hits)
-        prompt = self._build_qa_prompt(question, context)
-        answer = await self.llm.generate_text(prompt)
-        sources = self._build_sources(hits)
-        sources_payload = [source.__dict__ for source in sources]
-        trace_id = await self.mongo.save_chat_log(
-            question=question,
-            answer=answer,
-            sources=sources_payload,
-            kind="query",
-            metadata={"hits": len(hits)},
-        )
-        return {"answer": answer, "sources": sources_payload, "trace_id": trace_id}
+        try:
+            vector = await self.embedding.embed_text(question)
+            if not vector:
+                raise ValueError("Failed to generate embedding")
+            
+            hits = self.qdrant.similarity_search(
+                vector,
+                limit=self.settings.rag_top_k,
+                score_threshold=self.settings.rag_score_threshold,
+            )
+            context = self._format_context(hits)
+            prompt = self._build_qa_prompt(question, context)
+            # System instruction to limit scope to Vietnamese History
+            system_instruction = (
+                "Bạn là trợ lý AI chuyên về Lịch sử Việt Nam. "
+                "Chỉ trả lời các câu hỏi liên quan đến Lịch sử Việt Nam. "
+                "Nếu câu hỏi không liên quan, hãy nhẹ nhàng từ chối và hướng dẫn người dùng."
+            )
+            answer = await self.llm.generate_text(prompt, system_instruction=system_instruction)
+            if not answer:
+                raise ValueError("LLM returned empty response")
+            
+            sources = self._build_sources(hits)
+            sources_payload = [source.__dict__ for source in sources]
+            
+            # Try to save log, but don't fail if MongoDB is unavailable
+            trace_id = None
+            try:
+                trace_id = await self.mongo.save_chat_log(
+                    question=question,
+                    answer=answer,
+                    sources=sources_payload,
+                    kind="query",
+                    metadata={"hits": len(hits)},
+                )
+            except Exception as e:
+                logger.warning(f"Failed to save chat log: {e}")
+            
+            return {"answer": answer, "sources": sources_payload, "trace_id": trace_id}
+        except Exception as e:
+            logger.error(f"Error in answer_question: {e}", exc_info=True)
+            raise
 
     async def summarize_topic(self, topic: str, detail_level: str = "medium") -> Dict[str, Any]:
         vector = await self.embedding.embed_text(topic)
         hits = self.qdrant.similarity_search(vector, limit=10)
         context = self._format_context(hits)
         prompt = self._build_summary_prompt(topic, context, detail_level)
-        summary = await self.llm.generate_text(prompt)
+        system_instruction = (
+            "Bạn là trợ lý AI chuyên về Lịch sử Việt Nam. "
+            "Chỉ tóm tắt các chủ đề liên quan đến Lịch sử Việt Nam."
+        )
+        summary = await self.llm.generate_text(prompt, system_instruction=system_instruction)
         sources_payload = [source.__dict__ for source in self._build_sources(hits)]
         trace_id = await self.mongo.save_chat_log(
             question=topic,
@@ -83,7 +110,11 @@ class RagPipeline:
         hits = self.qdrant.similarity_search(vector, limit=12)
         context = self._format_context(hits)
         prompt = self._build_timeline_prompt(entity, context)
-        events = await self.llm.generate_json(prompt)
+        system_instruction = (
+            "Bạn là trợ lý AI chuyên về Lịch sử Việt Nam. "
+            "Chỉ tạo timeline cho các nhân vật/sự kiện trong Lịch sử Việt Nam."
+        )
+        events = await self.llm.generate_json(prompt, system_instruction=system_instruction)
         sources_payload = [source.__dict__ for source in self._build_sources(hits)]
         trace_id = await self.mongo.save_chat_log(
             question=entity,
@@ -110,6 +141,20 @@ class RagPipeline:
             metadata={"num_questions": num_questions},
         )
         return {"questions": mcq_payload.get("questions", []), "trace_id": trace_id}
+
+    async def generate_history_image(self, prompt: str) -> Dict[str, Any]:
+        """
+        Generate a comic-style image about Vietnamese history.
+        """
+        try:
+            image_data = await self.llm.generate_image(prompt)
+            return {
+                "image_url": image_data,
+                "prompt": prompt,
+            }
+        except Exception as e:
+            logger.error(f"Error generating image: {str(e)}", exc_info=True)
+            raise ValueError(f"Không thể tạo ảnh: {str(e)}")
 
     async def ingest_text(
         self,
@@ -189,27 +234,44 @@ class RagPipeline:
 
     def _build_qa_prompt(self, question: str, context: str) -> str:
         return (
-            "Dưới đây là một số tư liệu lịch sử Việt Nam:\n\n"
+            "Bạn là trợ lý AI chuyên về Lịch sử Việt Nam. "
+            "Bạn có thể sử dụng cả kiến thức của chính bạn và các tư liệu được cung cấp dưới đây.\n\n"
+            "**QUAN TRỌNG:** Chỉ trả lời các câu hỏi về Lịch sử Việt Nam. "
+            "Nếu câu hỏi không liên quan đến Lịch sử Việt Nam, hãy nhẹ nhàng từ chối và hướng dẫn người dùng đặt câu hỏi về chủ đề này.\n\n"
+            "**Tư liệu tham khảo từ cơ sở dữ liệu:**\n"
             f"{context}\n\n"
-            f"Câu hỏi: {question}\n\n"
-            "Hãy trả lời bằng tiếng Việt, thân thiện nhưng chính xác, kèm trích dẫn nguồn theo dạng [số]. "
-            'Nếu không chắc chắn, hãy nói "Tôi không có đủ dữ liệu để trả lời."'
+            f"**Câu hỏi:** {question}\n\n"
+            "**Hướng dẫn trả lời:**\n"
+            "1. Ưu tiên sử dụng thông tin từ tư liệu tham khảo ở trên (nếu có và liên quan)\n"
+            "2. Nếu tư liệu không đủ, bạn có thể bổ sung bằng kiến thức của chính bạn về Lịch sử Việt Nam\n"
+            "3. Trích dẫn nguồn theo dạng [số] khi dùng thông tin từ tư liệu\n"
+            "4. Trả lời bằng tiếng Việt, thân thiện, chính xác và dễ hiểu\n"
+            "5. Sử dụng markdown để format câu trả lời (headings, lists, bold, italic)\n"
+            "6. Nếu không có thông tin đáng tin cậy, hãy nói rõ 'Tôi không có đủ dữ liệu để trả lời câu hỏi này.'"
         )
 
     def _build_summary_prompt(self, topic: str, context: str, detail_level: str) -> str:
         return (
-            f"Hãy tóm tắt về chủ đề {topic} dựa trên các trích đoạn dưới đây.\n"
-            f"Yêu cầu mức độ chi tiết: {detail_level}.\n\n"
-            f"{context}\n\n"
-            "Trả lời bằng tiếng Việt, dạng đoạn văn ngắn và có thể liệt kê những điểm chính."
+            f"Bạn là trợ lý AI chuyên về Lịch sử Việt Nam. "
+            f"Hãy tóm tắt về chủ đề '{topic}' (chỉ về Lịch sử Việt Nam).\n\n"
+            f"**Tư liệu tham khảo:**\n{context}\n\n"
+            f"**Yêu cầu:**\n"
+            f"- Mức độ chi tiết: {detail_level}\n"
+            f"- Ưu tiên thông tin từ tư liệu, có thể bổ sung bằng kiến thức của bạn về Lịch sử Việt Nam\n"
+            f"- Trả lời bằng tiếng Việt, sử dụng markdown để format\n"
+            f"- Liệt kê những điểm chính nếu phù hợp"
         )
 
     def _build_timeline_prompt(self, entity: str, context: str) -> str:
         return (
-            f"Dựa vào tư liệu sau, tạo timeline các mốc sự kiện quan trọng liên quan tới {entity}.\n"
-            "Trả về JSON với cấu trúc {\"events\": [{\"year\": \"\", \"title\": \"\", \"description\": \"\"}]}.\n"
-            "Nếu không chắc chắn về năm tháng, hãy ghi rõ \"Không rõ\"."
-            f"\n\n{context}"
+            f"Bạn là trợ lý AI chuyên về Lịch sử Việt Nam. "
+            f"Tạo timeline các mốc sự kiện quan trọng liên quan tới '{entity}' trong Lịch sử Việt Nam.\n\n"
+            f"**Tư liệu tham khảo:**\n{context}\n\n"
+            f"**Yêu cầu:**\n"
+            f"- Ưu tiên thông tin từ tư liệu, có thể bổ sung bằng kiến thức của bạn về Lịch sử Việt Nam\n"
+            f"- Trả về JSON với cấu trúc {{\"events\": [{{\"year\": \"\", \"title\": \"\", \"description\": \"\"}}]}}\n"
+            f"- Nếu không chắc chắn về năm tháng, hãy ghi rõ \"Không rõ\"\n"
+            f"- Chỉ bao gồm các sự kiện liên quan đến Lịch sử Việt Nam"
         )
 
     def _build_mcq_prompt(self, context: str, num_questions: int) -> str:
