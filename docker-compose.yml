@@ -1,0 +1,50 @@
+version: '3.8'
+
+# Chạy file này bằng lệnh: docker-compose up -d
+
+services:
+  # Service cho MongoDB
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    # Cấu hình username và password cho MongoDB
+    # Tương ứng với MONGO_URI="mongodb://mongoadmin:secret@localhost:27017/"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongoadmin
+      MONGO_INITDB_ROOT_PASSWORD: secret
+    volumes:
+      # Dùng volume để lưu trữ dữ liệu MongoDB, tránh mất dữ liệu khi container bị xóa
+      - mongo_data:/data/db
+    networks:
+      - su-viet-rag-net
+
+  # Service cho Qdrant Vector Database
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: qdrant
+    ports:
+      # Port 6333 cho gRPC (dùng bởi Python client)
+      - "6333:6333"
+      # Port 6334 cho REST API (có thể truy cập dashboard tại http://localhost:6334/dashboard)
+      - "6334:6334"
+    # Cấu hình API key cho Qdrant như trong file information.md
+    # Bạn có thể thay 'your_qdrant_key' bằng một key bí mật thực sự
+    environment:
+      QDRANT__SERVICE__API_KEY: your_qdrant_key
+    volumes:
+      # Dùng volume để lưu trữ dữ liệu của Qdrant
+      - qdrant_data:/qdrant/storage
+    networks:
+      - su-viet-rag-net
+
+# Định nghĩa volumes để lưu trữ dữ liệu
+volumes:
+  mongo_data:
+  qdrant_data:
+
+# Định nghĩa network để các container có thể giao tiếp với nhau qua tên service
+networks:
+  su-viet-rag-net:
+    driver: bridge
