@@ -146,40 +146,38 @@ class GeminiService:
             raise ValueError(error_msg)
         
         # Enhance prompt with safety and educational instructions
-        enhanced_prompt = PromptValidator.enhance_prompt(prompt)
+        # Note: Image generation model doesn't support systemInstruction,
+        # so we include safety instructions directly in the prompt
+        safety_instruction = PromptValidator.add_safety_instruction()
+        enhanced_prompt = f"{safety_instruction}\n\n{PromptValidator.enhance_prompt(prompt)}"
         
         contents = [{"parts": [{"text": enhanced_prompt}]}]
         
         # Build request payload for image generation
         # Note: Gemini Image API requires both TEXT and IMAGE modalities
-        # Add safety instruction
-        safety_instruction = PromptValidator.add_safety_instruction()
         payload = {
             "contents": contents,
-            "systemInstruction": {
-                "parts": [{"text": safety_instruction}]
-            },
             "generationConfig": {
-                "responseModalities": ["TEXT", "IMAGE"],
-                "safetySettings": [
-                    {
-                        "category": "HARM_CATEGORY_HARASSMENT",
-                        "threshold": "BLOCK_MEDIUM_AND_ABOVE"
-                    },
-                    {
-                        "category": "HARM_CATEGORY_HATE_SPEECH",
-                        "threshold": "BLOCK_MEDIUM_AND_ABOVE"
-                    },
-                    {
-                        "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-                        "threshold": "BLOCK_MEDIUM_AND_ABOVE"
-                    },
-                    {
-                        "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
-                        "threshold": "BLOCK_MEDIUM_AND_ABOVE"
-                    }
-                ]
-            }
+                "responseModalities": ["TEXT", "IMAGE"]
+            },
+            "safetySettings": [
+                {
+                    "category": "HARM_CATEGORY_HARASSMENT",
+                    "threshold": "BLOCK_MEDIUM_AND_ABOVE"
+                },
+                {
+                    "category": "HARM_CATEGORY_HATE_SPEECH",
+                    "threshold": "BLOCK_MEDIUM_AND_ABOVE"
+                },
+                {
+                    "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                    "threshold": "BLOCK_MEDIUM_AND_ABOVE"
+                },
+                {
+                    "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+                    "threshold": "BLOCK_MEDIUM_AND_ABOVE"
+                }
+            ]
         }
         
         # Use image generation model URL

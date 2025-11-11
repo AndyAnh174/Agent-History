@@ -21,6 +21,19 @@ cp .env.example .env
 # update .env with real secrets
 ```
 
+#### Docker (quick start)
+
+```bash
+cp .env.example .env  # edit GEMINI_API_KEY at minimum
+docker compose up --build -d
+```
+
+Services exposed:
+
+- `http://localhost` → Nginx proxy (serves UI and API under `/api`)
+- `http://localhost:6334` → Qdrant dashboard
+- `mongo://localhost:27017` → MongoDB (mapped only if you publish ports)
+
 Start infrastructure:
 
 ```bash

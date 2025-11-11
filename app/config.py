@@ -19,6 +19,8 @@ class Settings(BaseSettings):
     qdrant_api_key: str | None = Field(default=None, alias="QDRANT_API_KEY")
     qdrant_collection: str = Field(default="vietnam_history", alias="QDRANT_COLLECTION")
     embedding_dimension: int = Field(default=1024, alias="EMBEDDING_DIM")
+    qdrant_max_retries: int = Field(default=10, alias="QDRANT_MAX_RETRIES")
+    qdrant_retry_delay: float = Field(default=3.0, alias="QDRANT_RETRY_DELAY")
     rag_top_k: int = Field(default=5, alias="RAG_TOP_K")
     rag_score_threshold: float = Field(default=0.25, alias="RAG_SCORE_THRESHOLD")
 

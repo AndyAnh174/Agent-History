@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import time
 from dataclasses import dataclass
-from typing import Any, Dict, Iterable, List, Sequence
+from typing import Any, Dict, List, Sequence
 from uuid import uuid4
 
+from loguru import logger
 from qdrant_client import QdrantClient
 from qdrant_client.http.exceptions import UnexpectedResponse
 from qdrant_client.models import Distance, PointStruct, VectorParams
@@ -28,21 +30,59 @@ class QdrantService:
         collection_name: str,
         vector_size: int,
         distance: Distance = Distance.COSINE,
+        max_retries: int = 10,
+        retry_delay: float = 3.0,
     ):
         self.collection_name = collection_name
         self.vector_size = vector_size
         self.distance = distance
         self.client = QdrantClient(url=url, api_key=api_key)
+        self.max_retries = max_retries
+        self.retry_delay = retry_delay
         self._ensure_collection()
 
     def _ensure_collection(self) -> None:
-        try:
-            self.client.get_collection(self.collection_name)
-        except UnexpectedResponse:
-            self.client.recreate_collection(
-                collection_name=self.collection_name,
-                vectors_config=VectorParams(size=self.vector_size, distance=self.distance),
-            )
+        last_error: Exception | None = None
+
+        for attempt in range(1, self.max_retries + 1):
+            try:
+                self.client.get_collection(self.collection_name)
+                if attempt > 1:
+                    logger.info("Connected to Qdrant collection '{}' on attempt {}", self.collection_name, attempt)
+                return
+            except UnexpectedResponse:
+                try:
+                    logger.info("Collection '{}' not found. Creating...", self.collection_name)
+                    self.client.recreate_collection(
+                        collection_name=self.collection_name,
+                        vectors_config=VectorParams(size=self.vector_size, distance=self.distance),
+                    )
+                    logger.info("Created Qdrant collection '{}'", self.collection_name)
+                    return
+                except Exception as create_error:
+                    last_error = create_error
+                    logger.warning(
+                        "Failed to create Qdrant collection '{}' (attempt {}/{}): {}",
+                        self.collection_name,
+                        attempt,
+                        self.max_retries,
+                        create_error,
+                    )
+            except Exception as err:  # Connection refused, timeouts, etc.
+                last_error = err
+                logger.warning(
+                    "Unable to connect to Qdrant (attempt {}/{}): {}",
+                    attempt,
+                    self.max_retries,
+                    err,
+                )
+
+            if attempt < self.max_retries:
+                time.sleep(self.retry_delay)
+
+        raise RuntimeError(
+            f"Unable to connect to Qdrant after {self.max_retries} attempts. Last error: {last_error}"
+        ) from last_error
 
     def upsert_documents(self, vectors: Sequence[Sequence[float]], documents: Sequence[VectorDocument]) -> int:
         if not vectors or not documents:

@@ -297,6 +297,8 @@ def build_pipeline(settings: Settings | None = None) -> RagPipeline:
         api_key=settings.qdrant_api_key,
         collection_name=settings.qdrant_collection,
         vector_size=settings.embedding_dimension,
+        max_retries=settings.qdrant_max_retries,
+        retry_delay=settings.qdrant_retry_delay,
     )
     llm_service = GeminiService(
         api_key=settings.gemini_api_key,

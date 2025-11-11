@@ -3,19 +3,43 @@ version: '3.8'
 # Chạy file này bằng lệnh: docker-compose up -d
 
 services:
+  # FastAPI backend
+  app:
+    build: .
+    container_name: su-viet-rag-api
+    env_file:
+      - .env
+    expose:
+      - "8000"
+    depends_on:
+      - mongodb
+      - qdrant
+    networks:
+      - su-viet-rag-net
+
+  # Reverse proxy (no SSL, handled by Cloudflare tunnel)
+  reverse-proxy:
+    image: nginx:1.27-alpine
+    container_name: su-viet-rag-proxy
+    depends_on:
+      - app
+    ports:
+      - "8083:80"
+    volumes:
+      - ./deploy/nginx.conf:/etc/nginx/nginx.conf:ro
+      # Nếu muốn phục vụ UI tĩnh, mount thư mục UI vào nginx
+      - ./ui:/usr/share/nginx/html:ro
+    networks:
+      - su-viet-rag-net
+
   # Service cho MongoDB
   mongodb:
     image: mongo:latest
     container_name: mongodb
-    ports:
-      - "27017:27017"
-    # Cấu hình username và password cho MongoDB
-    # Tương ứng với MONGO_URI="mongodb://mongoadmin:secret@localhost:27017/"
     environment:
       MONGO_INITDB_ROOT_USERNAME: mongoadmin
       MONGO_INITDB_ROOT_PASSWORD: secret
     volumes:
-      # Dùng volume để lưu trữ dữ liệu MongoDB, tránh mất dữ liệu khi container bị xóa
       - mongo_data:/data/db
     networks:
       - su-viet-rag-net
@@ -25,16 +49,9 @@ services:
     image: qdrant/qdrant:latest
     container_name: qdrant
     ports:
-      # Port 6333 cho gRPC (dùng bởi Python client)
       - "6333:6333"
-      # Port 6334 cho REST API (có thể truy cập dashboard tại http://localhost:6334/dashboard)
       - "6334:6334"
-    # Cấu hình API key cho Qdrant như trong file information.md
-    # Bạn có thể thay 'your_qdrant_key' bằng một key bí mật thực sự
-    environment:
-      QDRANT__SERVICE__API_KEY: your_qdrant_key
     volumes:
-      # Dùng volume để lưu trữ dữ liệu của Qdrant
       - qdrant_data:/qdrant/storage
     networks:
       - su-viet-rag-net
