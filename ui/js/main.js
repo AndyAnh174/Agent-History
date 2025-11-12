@@ -117,15 +117,15 @@ function addChatMessage(message, isUser = false) {
     
     messageDiv.innerHTML = `
         <div class="chat-image avatar">
-            <div class="w-10 rounded-full ${isUser ? 'bg-secondary' : 'bg-primary'} text-${isUser ? 'secondary' : 'primary'}-content flex items-center justify-center">
-                <i class="fas ${isUser ? 'fa-user' : 'fa-robot'}"></i>
+            <div class="w-14 h-14 rounded-full flex items-center justify-center text-2xl shadow-lg" style="background: linear-gradient(135deg, ${isUser ? '#10b981 0%, #059669 100%' : '#dc2626 0%, #ea580c 100%'}); border: 3px solid #fbbf24;">
+                ${isUser ? '👤' : '🤖'}
             </div>
         </div>
-        <div class="chat-header">
+        <div class="chat-header font-bold text-lg" style="font-family: 'Nunito', sans-serif; color: #dc2626;">
             ${isUser ? 'Bạn' : 'Sử Việt AI'}
-            <time class="text-xs opacity-50 ml-2">${time}</time>
+            <time class="text-xs opacity-70 ml-2">${time}</time>
         </div>
-        <div class="chat-bubble ${isUser ? 'chat-bubble-secondary' : 'chat-bubble-primary'}">
+        <div class="chat-bubble rounded-2xl shadow-lg p-4 text-base font-semibold" style="background: linear-gradient(135deg, ${isUser ? '#10b981 0%, #059669 100%' : '#dc2626 0%, #ea580c 100%'}); color: white; border: 3px solid #fbbf24; font-family: 'Nunito', sans-serif;">
             ${messageContent}
         </div>
     `;
@@ -142,17 +142,18 @@ function renderSources(sources, containerId) {
         return;
     }
     
-    container.innerHTML = '<h4 class="font-bold mt-4 mb-2">Nguồn tham khảo:</h4>';
+    container.innerHTML = '<h4 class="font-bold mt-4 mb-4 text-2xl" style="font-family: \'Fredoka\', sans-serif; color: #dc2626; text-shadow: 2px 2px 0px #fbbf24;"><span class="text-2xl mr-2">📚</span>Nguồn tham khảo:</h4>';
     sources.forEach((source, idx) => {
         const sourceCard = document.createElement('div');
-        sourceCard.className = 'card bg-base-200 source-card mb-2';
+        sourceCard.className = 'card source-card mb-3 shadow-lg rounded-xl overflow-hidden';
+        sourceCard.style.cssText = 'background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 3px solid #f59e0b;';
         sourceCard.innerHTML = `
             <div class="card-body p-4">
                 <div class="flex items-start justify-between">
                     <div class="flex-1">
-                        <h5 class="font-semibold text-sm">${source.title || `Nguồn ${idx + 1}`}</h5>
-                        <p class="text-xs text-base-content/70 mt-1">${source.snippet || ''}</p>
-                        ${source.score ? `<span class="badge badge-sm badge-outline mt-2">Độ liên quan: ${(source.score * 100).toFixed(1)}%</span>` : ''}
+                        <h5 class="font-bold text-lg mb-2" style="font-family: \'Fredoka\', sans-serif; color: #dc2626;">${source.title || `Nguồn ${idx + 1}`}</h5>
+                        <p class="text-base font-semibold mt-1" style="font-family: \'Nunito\', sans-serif; color: #92400e;">${source.snippet || ''}</p>
+                        ${source.score ? `<span class="badge text-sm font-bold px-3 py-1 mt-2 rounded-lg shadow-md" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; border: 2px solid #fbbf24;">Độ liên quan: ${(source.score * 100).toFixed(1)}%</span>` : ''}
                     </div>
                 </div>
             </div>
@@ -207,12 +208,12 @@ document.getElementById('chat-form').addEventListener('submit', async (e) => {
         }
         
         if (data.sources && data.sources.length > 0) {
-            answerHtml += '<div class="mt-4 pt-4 border-t border-base-300">';
-            answerHtml += '<p class="text-sm font-semibold mb-2">📚 Nguồn tham khảo:</p>';
+            answerHtml += '<div class="mt-4 pt-4" style="border-top: 3px solid rgba(255,255,255,0.3);">';
+            answerHtml += '<p class="text-base font-bold mb-3" style="font-family: \'Fredoka\', sans-serif;">📚 Nguồn tham khảo:</p>';
             data.sources.forEach((source, idx) => {
                 answerHtml += `
-                    <div class="text-xs mb-1">
-                        <span class="badge badge-sm badge-outline mr-2">[${idx + 1}]</span>
+                    <div class="text-sm mb-2 font-semibold" style="font-family: \'Nunito\', sans-serif;">
+                        <span class="badge text-xs font-bold px-2 py-1 mr-2 rounded-lg" style="background: rgba(255,255,255,0.3); border: 2px solid rgba(255,255,255,0.5);">[${idx + 1}]</span>
                         ${source.title || 'Nguồn không xác định'}
                     </div>
                 `;
@@ -337,14 +338,17 @@ document.getElementById('timeline-form').addEventListener('submit', async (e) =>
         if (data.events && Array.isArray(data.events) && data.events.length > 0) {
             data.events.forEach((event, idx) => {
                 const eventCard = document.createElement('div');
-                eventCard.className = 'card bg-base-200 mb-4';
+                eventCard.className = 'card mb-4 shadow-lg rounded-2xl overflow-hidden';
+                eventCard.style.cssText = 'background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 3px solid #f59e0b;';
                 eventCard.innerHTML = `
-                    <div class="card-body p-4">
+                    <div class="card-body p-5">
                         <div class="flex items-start gap-4">
-                            <div class="badge badge-accent badge-lg">${event.year || 'Không rõ'}</div>
+                            <div class="badge badge-lg text-xl font-bold px-4 py-3 rounded-xl shadow-lg" style="background: linear-gradient(135deg, #dc2626 0%, #ea580c 100%); color: white; border: 3px solid #fbbf24; font-family: \'Fredoka\', sans-serif;">
+                                <span class="text-lg mr-1">📅</span>${event.year || 'Không rõ'}
+                            </div>
                             <div class="flex-1">
-                                <h5 class="font-bold text-lg">${event.title || event.event || 'Sự kiện'}</h5>
-                                <p class="text-sm mt-1">${event.description || ''}</p>
+                                <h5 class="font-bold text-xl mb-2" style="font-family: \'Fredoka\', sans-serif; color: #dc2626;">${event.title || event.event || 'Sự kiện'}</h5>
+                                <p class="text-base font-semibold" style="font-family: \'Nunito\', sans-serif; color: #92400e;">${event.description || ''}</p>
                             </div>
                         </div>
                     </div>
@@ -352,7 +356,7 @@ document.getElementById('timeline-form').addEventListener('submit', async (e) =>
                 timelineDiv.appendChild(eventCard);
             });
         } else {
-            timelineDiv.innerHTML = '<p class="text-center text-base-content/70">Không tìm thấy sự kiện nào.</p>';
+            timelineDiv.innerHTML = '<p class="text-center text-xl font-bold" style="font-family: \'Nunito\', sans-serif; color: #92400e;">Không tìm thấy sự kiện nào.</p>';
         }
         
         renderSources(data.sources, 'timeline-sources');
@@ -394,32 +398,37 @@ document.getElementById('mcq-form').addEventListener('submit', async (e) => {
         if (data.questions && Array.isArray(data.questions) && data.questions.length > 0) {
             data.questions.forEach((q, idx) => {
                 const questionCard = document.createElement('div');
-                questionCard.className = 'card bg-base-200';
+                questionCard.className = 'card shadow-lg rounded-2xl overflow-hidden mb-6';
+                questionCard.style.cssText = 'background: linear-gradient(135deg, #ffffff 0%, #fef3c7 100%); border: 3px solid #f59e0b;';
                 questionCard.innerHTML = `
-                    <div class="card-body">
-                        <h4 class="card-title text-lg">
-                            <span class="badge badge-info mr-2">Câu ${idx + 1}</span>
-                            ${q.question}
+                    <div class="card-body p-6">
+                        <h4 class="card-title text-2xl mb-4" style="font-family: \'Fredoka\', sans-serif; color: #dc2626;">
+                            <span class="badge text-lg font-bold px-4 py-2 mr-3 rounded-xl shadow-lg" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; border: 3px solid #fbbf24;">
+                                <span class="text-xl mr-1">❓</span>Câu ${idx + 1}
+                            </span>
+                            <span style="font-family: \'Nunito\', sans-serif; color: #92400e;">${q.question}</span>
                         </h4>
-                        <div class="space-y-2 mt-4">
+                        <div class="space-y-3 mt-4">
                             ${Object.entries(q.options || {}).map(([key, value]) => `
-                                <div class="flex items-center gap-2 p-2 bg-base-100 rounded">
-                                    <span class="badge ${key === q.correct_answer ? 'badge-success' : 'badge-outline'}">${key}</span>
-                                    <span>${value}</span>
-                                    ${key === q.correct_answer ? '<span class="badge badge-success badge-sm ml-auto">Đáp án đúng</span>' : ''}
+                                <div class="flex items-center gap-3 p-4 rounded-xl shadow-md" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 2px solid ${key === q.correct_answer ? '#10b981' : '#f59e0b'};">
+                                    <span class="badge text-lg font-bold px-4 py-2 rounded-xl" style="background: linear-gradient(135deg, ${key === q.correct_answer ? '#10b981 0%, #059669 100%' : '#dc2626 0%, #ea580c 100%'}); color: white; border: 2px solid #fbbf24;">
+                                        ${key}
+                                    </span>
+                                    <span class="flex-1 font-semibold text-lg" style="font-family: \'Nunito\', sans-serif; color: #92400e;">${value}</span>
+                                    ${key === q.correct_answer ? '<span class="badge text-base font-bold px-3 py-2 rounded-xl shadow-lg" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: 2px solid #fbbf24;"><span class="text-lg mr-1">✅</span>Đáp án đúng</span>' : ''}
                                 </div>
                             `).join('')}
                         </div>
-                        <div class="alert alert-info mt-4">
-                            <i class="fas fa-lightbulb"></i>
-                            <span class="text-sm"><strong>Giải thích:</strong> ${q.explanation || 'Không có giải thích'}</span>
+                        <div class="alert mt-5 p-4 rounded-xl shadow-lg" style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border: 3px solid #3b82f6;">
+                            <span class="text-2xl mr-3">💡</span>
+                            <span class="text-base font-bold" style="font-family: \'Nunito\', sans-serif; color: #1e3a8a;"><strong>Giải thích:</strong> ${q.explanation || 'Không có giải thích'}</span>
                         </div>
                     </div>
                 `;
                 questionsDiv.appendChild(questionCard);
             });
         } else {
-            questionsDiv.innerHTML = '<p class="text-center text-base-content/70">Không thể tạo câu hỏi từ văn bản này.</p>';
+            questionsDiv.innerHTML = '<p class="text-center text-xl font-bold" style="font-family: \'Nunito\', sans-serif; color: #92400e;">Không thể tạo câu hỏi từ văn bản này.</p>';
         }
         
         document.getElementById('mcq-result').classList.remove('hidden');

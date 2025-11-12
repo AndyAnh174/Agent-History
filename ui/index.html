@@ -10,60 +10,73 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="bg-base-200 min-h-screen">
+<body class="min-h-screen" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 25%, #fcd34d 50%, #fbbf24 75%, #f59e0b 100%); background-attachment: fixed;">
     <!-- Navigation -->
-    <div class="navbar bg-base-100 shadow-lg sticky top-0 z-50">
+    <div class="navbar sticky top-0 z-50 shadow-2xl" style="background: linear-gradient(135deg, #f97316 0%, #ea580c 50%, #dc2626 100%); border-bottom: 4px solid #fbbf24;">
         <div class="navbar-start">
             <div class="dropdown">
-                <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
-                    <i class="fas fa-bars text-xl"></i>
+                <div tabindex="0" role="button" class="btn btn-ghost lg:hidden text-white hover:bg-orange-600">
+                    <i class="fas fa-bars text-2xl"></i>
                 </div>
-                <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-                    <li><a onclick="switchTab('chat')"><i class="fas fa-comments"></i> Hỏi Đáp</a></li>
-                    <li><a onclick="switchTab('summarize')"><i class="fas fa-book"></i> Tóm Tắt</a></li>
-                    <li><a onclick="switchTab('timeline')"><i class="fas fa-timeline"></i> Timeline</a></li>
-                    <li><a onclick="switchTab('mcq')"><i class="fas fa-question-circle"></i> Trắc Nghiệm</a></li>
-                    <li><a onclick="switchTab('image')"><i class="fas fa-image"></i> Tạo Ảnh</a></li>
+                <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow-2xl rounded-2xl w-56" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 3px solid #f59e0b;">
+                    <li><a onclick="switchTab('chat')" class="text-orange-800 font-bold hover:bg-yellow-300 rounded-xl"><span class="text-xl mr-2">💬</span> Hỏi Đáp</a></li>
+                    <li><a onclick="switchTab('summarize')" class="text-orange-800 font-bold hover:bg-yellow-300 rounded-xl"><span class="text-xl mr-2">📚</span> Tóm Tắt</a></li>
+                    <li><a onclick="switchTab('timeline')" class="text-orange-800 font-bold hover:bg-yellow-300 rounded-xl"><span class="text-xl mr-2">⏰</span> Timeline</a></li>
+                    <li><a onclick="switchTab('mcq')" class="text-orange-800 font-bold hover:bg-yellow-300 rounded-xl"><span class="text-xl mr-2">❓</span> Trắc Nghiệm</a></li>
+                    <li><a onclick="switchTab('image')" class="text-orange-800 font-bold hover:bg-yellow-300 rounded-xl"><span class="text-xl mr-2">🎨</span> Tạo Ảnh</a></li>
                 </ul>
             </div>
-            <a class="btn btn-ghost text-xl font-bold gradient-bg text-white">
-                <i class="fas fa-landmark mr-2"></i>
+            <a class="btn btn-ghost text-2xl font-bold text-white hover:bg-orange-600 rounded-2xl" style="font-family: 'Fredoka', sans-serif; text-shadow: 3px 3px 0px rgba(0,0,0,0.2);">
+                <span class="text-3xl mr-2">🏛️</span>
                 Sử Việt
             </a>
         </div>
         <div class="navbar-center hidden lg:flex">
-            <ul class="menu menu-horizontal px-1">
-                <li><a onclick="switchTab('chat')" class="tab-link active" data-tab="chat"><i class="fas fa-comments mr-2"></i>Hỏi Đáp</a></li>
-                <li><a onclick="switchTab('summarize')" class="tab-link" data-tab="summarize"><i class="fas fa-book mr-2"></i>Tóm Tắt</a></li>
-                <li><a onclick="switchTab('timeline')" class="tab-link" data-tab="timeline"><i class="fas fa-timeline mr-2"></i>Timeline</a></li>
-                <li><a onclick="switchTab('mcq')" class="tab-link" data-tab="mcq"><i class="fas fa-question-circle mr-2"></i>Trắc Nghiệm</a></li>
-                <li><a onclick="switchTab('image')" class="tab-link" data-tab="image"><i class="fas fa-image mr-2"></i>Tạo Ảnh</a></li>
+            <ul class="menu menu-horizontal px-1 gap-1">
+                <li><a onclick="switchTab('chat')" class="tab-link active text-white font-bold rounded-xl hover:bg-orange-600 px-4 py-2" data-tab="chat" style="font-family: 'Nunito', sans-serif;"><span class="text-lg mr-2">💬</span>Hỏi Đáp</a></li>
+                <li><a onclick="switchTab('summarize')" class="tab-link text-white font-bold rounded-xl hover:bg-orange-600 px-4 py-2" data-tab="summarize" style="font-family: 'Nunito', sans-serif;"><span class="text-lg mr-2">📚</span>Tóm Tắt</a></li>
+                <li><a onclick="switchTab('timeline')" class="tab-link text-white font-bold rounded-xl hover:bg-orange-600 px-4 py-2" data-tab="timeline" style="font-family: 'Nunito', sans-serif;"><span class="text-lg mr-2">⏰</span>Timeline</a></li>
+                <li><a onclick="switchTab('mcq')" class="tab-link text-white font-bold rounded-xl hover:bg-orange-600 px-4 py-2" data-tab="mcq" style="font-family: 'Nunito', sans-serif;"><span class="text-lg mr-2">❓</span>Trắc Nghiệm</a></li>
+                <li><a onclick="switchTab('image')" class="tab-link text-white font-bold rounded-xl hover:bg-orange-600 px-4 py-2" data-tab="image" style="font-family: 'Nunito', sans-serif;"><span class="text-lg mr-2">🎨</span>Tạo Ảnh</a></li>
             </ul>
         </div>
         <div class="navbar-end">
-            <div class="badge badge-success gap-2">
-                <i class="fas fa-circle text-xs"></i>
+            <div class="badge gap-2 text-white font-bold px-4 py-2 rounded-full shadow-lg" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: 2px solid #fbbf24; font-family: 'Nunito', sans-serif;">
+                <span class="text-lg animate-pulse">✨</span>
                 <span>Đang hoạt động</span>
             </div>
         </div>
     </div>
 
     <!-- Hero Section (only show on first load) -->
-    <div id="hero-section" class="hero gradient-bg text-white py-16">
-        <div class="hero-content text-center">
-            <div class="max-w-3xl">
-                <h1 class="mb-5 text-5xl font-bold">
-                    <i class="fas fa-graduation-cap mr-3"></i>
-                    Học Lịch Sử Việt Nam Thông Minh
+    <div id="hero-section" class="hero py-20 text-center relative overflow-hidden" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 25%, #fcd34d 50%, #fbbf24 75%, #f59e0b 100%);">
+        <div class="absolute inset-0 opacity-20">
+            <div class="absolute top-10 left-10 text-6xl animate-bounce" style="animation-delay: 0s;">🏛️</div>
+            <div class="absolute top-20 right-20 text-5xl animate-bounce" style="animation-delay: 0.5s;">📜</div>
+            <div class="absolute bottom-20 left-20 text-5xl animate-bounce" style="animation-delay: 1s;">⚔️</div>
+            <div class="absolute bottom-10 right-10 text-6xl animate-bounce" style="animation-delay: 1.5s;">👑</div>
+        </div>
+        <div class="hero-content text-center relative z-10">
+            <div class="max-w-4xl">
+                <div class="mb-6">
+                    <span class="text-8xl inline-block animate-pulse">🏛️</span>
+                </div>
+                <h1 class="mb-6 text-6xl font-bold" style="font-family: 'Fredoka', sans-serif; color: #dc2626; text-shadow: 4px 4px 0px #fbbf24, 8px 8px 0px rgba(0,0,0,0.1); line-height: 1.2;">
+                    Học Lịch Sử Việt Nam<br/>
+                    <span class="text-5xl" style="color: #ea580c;">Thật Vui & Dễ Hiểu!</span>
                 </h1>
-                <p class="mb-8 text-xl opacity-90">
-                    Khám phá lịch sử dân tộc qua AI - Hỏi đáp, tóm tắt, timeline và câu hỏi trắc nghiệm
+                <p class="mb-10 text-2xl font-semibold" style="font-family: 'Nunito', sans-serif; color: #92400e; text-shadow: 2px 2px 0px rgba(255,255,255,0.5);">
+                    🎉 Khám phá lịch sử dân tộc qua những câu chuyện thú vị!<br/>
+                    💬 Hỏi đáp • 📚 Tóm tắt • ⏰ Timeline • ❓ Trắc nghiệm • 🎨 Tạo ảnh
                 </p>
-                <button onclick="startLearning()" class="btn btn-lg btn-accent text-white">
-                    <i class="fas fa-rocket mr-2"></i>
-                    Bắt Đầu Học Ngay
+                <button onclick="startLearning()" class="btn text-2xl font-bold px-8 py-4 rounded-2xl shadow-2xl transform hover:scale-110 transition-all duration-300" style="font-family: 'Fredoka', sans-serif; background: linear-gradient(135deg, #dc2626 0%, #ea580c 100%); color: white; border: 4px solid #fbbf24;">
+                    <span class="text-3xl mr-3">🚀</span>
+                    Bắt Đầu Học Ngay!
                 </button>
             </div>
         </div>
@@ -73,48 +86,53 @@
     <div id="main-content" class="container mx-auto px-4 py-8" style="display: none;">
         <!-- Chat Tab -->
         <div id="chat-tab" class="tab-content" style="display: block;">
-            <div class="max-w-4xl mx-auto">
-                <div class="card bg-base-100 shadow-xl">
-                    <div class="card-body">
-                        <h2 class="card-title text-3xl mb-4">
-                            <i class="fas fa-comments text-primary"></i>
-                            Hỏi Đáp Lịch Sử
-                        </h2>
-                        <p class="text-base-content/70 mb-6">
-                            Đặt câu hỏi về bất kỳ sự kiện, nhân vật, triều đại nào trong lịch sử Việt Nam
-                        </p>
+            <div class="max-w-5xl mx-auto">
+                <div class="card shadow-2xl rounded-3xl overflow-hidden" style="background: linear-gradient(135deg, #ffffff 0%, #fef3c7 100%); border: 4px solid #f59e0b;">
+                    <div class="card-body p-6">
+                        <div class="flex items-center gap-3 mb-6">
+                            <span class="text-5xl">💬</span>
+                            <div>
+                                <h2 class="text-4xl font-bold" style="font-family: 'Fredoka', sans-serif; color: #dc2626; text-shadow: 2px 2px 0px #fbbf24;">
+                                    Hỏi Đáp Lịch Sử
+                                </h2>
+                                <p class="text-lg font-semibold mt-1" style="font-family: 'Nunito', sans-serif; color: #92400e;">
+                                    Đặt câu hỏi về bất kỳ sự kiện, nhân vật, triều đại nào trong lịch sử Việt Nam
+                                </p>
+                            </div>
+                        </div>
                         
                         <!-- Chat Messages -->
-                        <div id="chat-messages" class="space-y-4 mb-6 min-h-[400px] max-h-[600px] overflow-y-auto p-4 bg-base-200 rounded-lg">
+                        <div id="chat-messages" class="space-y-4 mb-6 min-h-[400px] max-h-[600px] overflow-y-auto p-5 rounded-2xl" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 3px solid #f59e0b;">
                             <div class="chat chat-start">
                                 <div class="chat-image avatar">
-                                    <div class="w-10 rounded-full bg-primary text-primary-content flex items-center justify-center">
-                                        <i class="fas fa-robot"></i>
+                                    <div class="w-14 h-14 rounded-full flex items-center justify-center text-2xl shadow-lg" style="background: linear-gradient(135deg, #dc2626 0%, #ea580c 100%); border: 3px solid #fbbf24;">
+                                        🤖
                                     </div>
                                 </div>
-                                <div class="chat-header">
+                                <div class="chat-header font-bold text-lg" style="font-family: 'Nunito', sans-serif; color: #dc2626;">
                                     Sử Việt AI
-                                    <time class="text-xs opacity-50 ml-2">Bây giờ</time>
+                                    <time class="text-xs opacity-70 ml-2">Bây giờ</time>
                                 </div>
-                                <div class="chat-bubble chat-bubble-primary">
-                                    Chào bạn! Tôi là trợ lý AI về lịch sử Việt Nam. Hãy đặt câu hỏi để bắt đầu nhé! 
+                                <div class="chat-bubble rounded-2xl shadow-lg p-4 text-base font-semibold" style="background: linear-gradient(135deg, #dc2626 0%, #ea580c 100%); color: white; border: 3px solid #fbbf24; font-family: 'Nunito', sans-serif;">
+                                    👋 Chào bạn! Tôi là trợ lý AI về lịch sử Việt Nam. Hãy đặt câu hỏi để bắt đầu nhé! 
                                     <br><br>
-                                    Ví dụ: "Vua Quang Trung sinh năm nào?" hoặc "Chiến thắng Bạch Đằng diễn ra năm nào?"
+                                    💡 Ví dụ: "Vua Quang Trung sinh năm nào?" hoặc "Chiến thắng Bạch Đằng diễn ra năm nào?"
                                 </div>
                             </div>
                         </div>
 
                         <!-- Input Form -->
-                        <form id="chat-form" class="flex gap-2">
+                        <form id="chat-form" class="flex gap-3">
                             <input 
                                 type="text" 
                                 id="chat-input" 
-                                placeholder="Nhập câu hỏi của bạn..." 
-                                class="input input-bordered flex-1"
+                                placeholder="💭 Nhập câu hỏi của bạn..." 
+                                class="input flex-1 text-lg font-semibold rounded-2xl shadow-lg" 
+                                style="font-family: 'Nunito', sans-serif; border: 3px solid #f59e0b; background: white;"
                                 required
                             />
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-paper-plane mr-2"></i>
+                            <button type="submit" class="btn text-lg font-bold px-6 rounded-2xl shadow-lg transform hover:scale-105 transition-all" style="font-family: 'Fredoka', sans-serif; background: linear-gradient(135deg, #dc2626 0%, #ea580c 100%); color: white; border: 3px solid #fbbf24;">
+                                <span class="text-xl mr-2">🚀</span>
                                 Gửi
                             </button>
                         </form>
@@ -125,53 +143,60 @@
 
         <!-- Summarize Tab -->
         <div id="summarize-tab" class="tab-content hidden">
-            <div class="max-w-4xl mx-auto">
-                <div class="card bg-base-100 shadow-xl">
-                    <div class="card-body">
-                        <h2 class="card-title text-3xl mb-4">
-                            <i class="fas fa-book text-secondary"></i>
-                            Tóm Tắt Chủ Đề
-                        </h2>
-                        <p class="text-base-content/70 mb-6">
-                            Nhận tóm tắt chi tiết về một chủ đề lịch sử (triều đại, nhân vật, sự kiện...)
-                        </p>
+            <div class="max-w-5xl mx-auto">
+                <div class="card shadow-2xl rounded-3xl overflow-hidden" style="background: linear-gradient(135deg, #ffffff 0%, #fef3c7 100%); border: 4px solid #f59e0b;">
+                    <div class="card-body p-6">
+                        <div class="flex items-center gap-3 mb-6">
+                            <span class="text-5xl">📚</span>
+                            <div>
+                                <h2 class="text-4xl font-bold" style="font-family: 'Fredoka', sans-serif; color: #dc2626; text-shadow: 2px 2px 0px #fbbf24;">
+                                    Tóm Tắt Chủ Đề
+                                </h2>
+                                <p class="text-lg font-semibold mt-1" style="font-family: 'Nunito', sans-serif; color: #92400e;">
+                                    Nhận tóm tắt chi tiết về một chủ đề lịch sử (triều đại, nhân vật, sự kiện...)
+                                </p>
+                            </div>
+                        </div>
                         
-                        <form id="summarize-form" class="space-y-4">
+                        <form id="summarize-form" class="space-y-5">
                             <div class="form-control">
                                 <label class="label">
-                                    <span class="label-text font-semibold">Chủ đề cần tóm tắt</span>
+                                    <span class="label-text text-xl font-bold" style="font-family: 'Nunito', sans-serif; color: #dc2626;">📝 Chủ đề cần tóm tắt</span>
                                 </label>
                                 <input 
                                     type="text" 
                                     id="summarize-topic" 
-                                    placeholder="Ví dụ: Nhà Trần, Vua Quang Trung, Chiến tranh Đông Dương..."
-                                    class="input input-bordered w-full"
+                                    placeholder="💡 Ví dụ: Nhà Trần, Vua Quang Trung, Chiến tranh Đông Dương..."
+                                    class="input w-full text-lg font-semibold rounded-2xl shadow-lg" 
+                                    style="font-family: 'Nunito', sans-serif; border: 3px solid #f59e0b; background: white;"
                                     required
                                 />
                             </div>
                             
                             <div class="form-control">
                                 <label class="label">
-                                    <span class="label-text font-semibold">Mức độ chi tiết</span>
+                                    <span class="label-text text-xl font-bold" style="font-family: 'Nunito', sans-serif; color: #dc2626;">⚙️ Mức độ chi tiết</span>
                                 </label>
-                                <select id="summarize-detail" class="select select-bordered w-full">
-                                    <option value="short">Ngắn gọn</option>
-                                    <option value="medium" selected>Vừa phải</option>
-                                    <option value="long">Chi tiết</option>
+                                <select id="summarize-detail" class="select w-full text-lg font-semibold rounded-2xl shadow-lg" style="font-family: 'Nunito', sans-serif; border: 3px solid #f59e0b; background: white;">
+                                    <option value="short">📄 Ngắn gọn</option>
+                                    <option value="medium" selected>📖 Vừa phải</option>
+                                    <option value="long">📚 Chi tiết</option>
                                 </select>
                             </div>
                             
-                            <button type="submit" class="btn btn-secondary w-full">
-                                <i class="fas fa-magic mr-2"></i>
+                            <button type="submit" class="btn w-full text-xl font-bold py-4 rounded-2xl shadow-2xl transform hover:scale-105 transition-all" style="font-family: 'Fredoka', sans-serif; background: linear-gradient(135deg, #dc2626 0%, #ea580c 100%); color: white; border: 3px solid #fbbf24;">
+                                <span class="text-2xl mr-2">✨</span>
                                 Tạo Tóm Tắt
                             </button>
                         </form>
 
-                        <div id="summarize-result" class="mt-6 hidden">
-                            <div class="divider"></div>
-                            <div class="space-y-4">
-                                <h3 class="text-xl font-bold">Kết quả tóm tắt</h3>
-                                <div id="summarize-content" class="prose max-w-none bg-base-200 p-6 rounded-lg"></div>
+                        <div id="summarize-result" class="mt-8 hidden">
+                            <div class="divider" style="border-color: #f59e0b; border-width: 3px;"></div>
+                            <div class="space-y-5">
+                                <h3 class="text-3xl font-bold" style="font-family: 'Fredoka', sans-serif; color: #dc2626; text-shadow: 2px 2px 0px #fbbf24;">
+                                    <span class="text-3xl mr-2">📋</span>Kết quả tóm tắt
+                                </h3>
+                                <div id="summarize-content" class="prose max-w-none p-6 rounded-2xl shadow-lg" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 3px solid #f59e0b; font-family: 'Nunito', sans-serif;"></div>
                                 <div id="summarize-sources" class="space-y-2"></div>
                             </div>
                         </div>
@@ -182,41 +207,48 @@
 
         <!-- Timeline Tab -->
         <div id="timeline-tab" class="tab-content hidden">
-            <div class="max-w-4xl mx-auto">
-                <div class="card bg-base-100 shadow-xl">
-                    <div class="card-body">
-                        <h2 class="card-title text-3xl mb-4">
-                            <i class="fas fa-timeline text-accent"></i>
-                            Dòng Thời Gian Sự Kiện
-                        </h2>
-                        <p class="text-base-content/70 mb-6">
-                            Xem các mốc sự kiện quan trọng của một nhân vật hoặc triều đại theo thời gian
-                        </p>
+            <div class="max-w-5xl mx-auto">
+                <div class="card shadow-2xl rounded-3xl overflow-hidden" style="background: linear-gradient(135deg, #ffffff 0%, #fef3c7 100%); border: 4px solid #f59e0b;">
+                    <div class="card-body p-6">
+                        <div class="flex items-center gap-3 mb-6">
+                            <span class="text-5xl">⏰</span>
+                            <div>
+                                <h2 class="text-4xl font-bold" style="font-family: 'Fredoka', sans-serif; color: #dc2626; text-shadow: 2px 2px 0px #fbbf24;">
+                                    Dòng Thời Gian Sự Kiện
+                                </h2>
+                                <p class="text-lg font-semibold mt-1" style="font-family: 'Nunito', sans-serif; color: #92400e;">
+                                    Xem các mốc sự kiện quan trọng của một nhân vật hoặc triều đại theo thời gian
+                                </p>
+                            </div>
+                        </div>
                         
-                        <form id="timeline-form" class="space-y-4">
+                        <form id="timeline-form" class="space-y-5">
                             <div class="form-control">
                                 <label class="label">
-                                    <span class="label-text font-semibold">Nhân vật hoặc triều đại</span>
+                                    <span class="label-text text-xl font-bold" style="font-family: 'Nunito', sans-serif; color: #dc2626;">👤 Nhân vật hoặc triều đại</span>
                                 </label>
                                 <input 
                                     type="text" 
                                     id="timeline-entity" 
-                                    placeholder="Ví dụ: Vua Quang Trung, Nhà Trần, Lý Thường Kiệt..."
-                                    class="input input-bordered w-full"
+                                    placeholder="💡 Ví dụ: Vua Quang Trung, Nhà Trần, Lý Thường Kiệt..."
+                                    class="input w-full text-lg font-semibold rounded-2xl shadow-lg" 
+                                    style="font-family: 'Nunito', sans-serif; border: 3px solid #f59e0b; background: white;"
                                     required
                                 />
                             </div>
                             
-                            <button type="submit" class="btn btn-accent w-full">
-                                <i class="fas fa-history mr-2"></i>
+                            <button type="submit" class="btn w-full text-xl font-bold py-4 rounded-2xl shadow-2xl transform hover:scale-105 transition-all" style="font-family: 'Fredoka', sans-serif; background: linear-gradient(135deg, #dc2626 0%, #ea580c 100%); color: white; border: 3px solid #fbbf24;">
+                                <span class="text-2xl mr-2">⏳</span>
                                 Tạo Timeline
                             </button>
                         </form>
 
-                        <div id="timeline-result" class="mt-6 hidden">
-                            <div class="divider"></div>
-                            <div class="space-y-4">
-                                <h3 class="text-xl font-bold">Dòng thời gian</h3>
+                        <div id="timeline-result" class="mt-8 hidden">
+                            <div class="divider" style="border-color: #f59e0b; border-width: 3px;"></div>
+                            <div class="space-y-5">
+                                <h3 class="text-3xl font-bold" style="font-family: 'Fredoka', sans-serif; color: #dc2626; text-shadow: 2px 2px 0px #fbbf24;">
+                                    <span class="text-3xl mr-2">📅</span>Dòng thời gian
+                                </h3>
                                 <div id="timeline-content" class="space-y-4"></div>
                                 <div id="timeline-sources" class="space-y-2"></div>
                             </div>
@@ -228,26 +260,31 @@
 
         <!-- MCQ Tab -->
         <div id="mcq-tab" class="tab-content hidden">
-            <div class="max-w-4xl mx-auto">
-                <div class="card bg-base-100 shadow-xl">
-                    <div class="card-body">
-                        <h2 class="card-title text-3xl mb-4">
-                            <i class="fas fa-question-circle text-info"></i>
-                            Câu Hỏi Trắc Nghiệm
-                        </h2>
-                        <p class="text-base-content/70 mb-6">
-                            Nhập một đoạn văn bản lịch sử để tự động tạo câu hỏi trắc nghiệm
-                        </p>
+            <div class="max-w-5xl mx-auto">
+                <div class="card shadow-2xl rounded-3xl overflow-hidden" style="background: linear-gradient(135deg, #ffffff 0%, #fef3c7 100%); border: 4px solid #f59e0b;">
+                    <div class="card-body p-6">
+                        <div class="flex items-center gap-3 mb-6">
+                            <span class="text-5xl">❓</span>
+                            <div>
+                                <h2 class="text-4xl font-bold" style="font-family: 'Fredoka', sans-serif; color: #dc2626; text-shadow: 2px 2px 0px #fbbf24;">
+                                    Câu Hỏi Trắc Nghiệm
+                                </h2>
+                                <p class="text-lg font-semibold mt-1" style="font-family: 'Nunito', sans-serif; color: #92400e;">
+                                    Nhập một đoạn văn bản lịch sử để tự động tạo câu hỏi trắc nghiệm
+                                </p>
+                            </div>
+                        </div>
                         
-                        <form id="mcq-form" class="space-y-4">
+                        <form id="mcq-form" class="space-y-5">
                             <div class="form-control">
                                 <label class="label">
-                                    <span class="label-text font-semibold">Đoạn văn bản lịch sử</span>
+                                    <span class="label-text text-xl font-bold" style="font-family: 'Nunito', sans-serif; color: #dc2626;">📝 Đoạn văn bản lịch sử</span>
                                 </label>
                                 <textarea 
                                     id="mcq-context" 
-                                    placeholder="Nhập đoạn văn bản về lịch sử Việt Nam (tối thiểu 50 ký tự)..."
-                                    class="textarea textarea-bordered h-32"
+                                    placeholder="💡 Nhập đoạn văn bản về lịch sử Việt Nam (tối thiểu 50 ký tự)..."
+                                    class="textarea h-32 text-lg font-semibold rounded-2xl shadow-lg" 
+                                    style="font-family: 'Nunito', sans-serif; border: 3px solid #f59e0b; background: white;"
                                     required
                                     minlength="50"
                                 ></textarea>
@@ -255,7 +292,7 @@
                             
                             <div class="form-control">
                                 <label class="label">
-                                    <span class="label-text font-semibold">Số lượng câu hỏi</span>
+                                    <span class="label-text text-xl font-bold" style="font-family: 'Nunito', sans-serif; color: #dc2626;">🔢 Số lượng câu hỏi</span>
                                 </label>
                                 <input 
                                     type="number" 
@@ -263,20 +300,23 @@
                                     min="1" 
                                     max="10" 
                                     value="3"
-                                    class="input input-bordered w-full"
+                                    class="input w-full text-lg font-semibold rounded-2xl shadow-lg" 
+                                    style="font-family: 'Nunito', sans-serif; border: 3px solid #f59e0b; background: white;"
                                 />
                             </div>
                             
-                            <button type="submit" class="btn btn-info w-full">
-                                <i class="fas fa-brain mr-2"></i>
+                            <button type="submit" class="btn w-full text-xl font-bold py-4 rounded-2xl shadow-2xl transform hover:scale-105 transition-all" style="font-family: 'Fredoka', sans-serif; background: linear-gradient(135deg, #dc2626 0%, #ea580c 100%); color: white; border: 3px solid #fbbf24;">
+                                <span class="text-2xl mr-2">🧠</span>
                                 Tạo Câu Hỏi
                             </button>
                         </form>
 
-                        <div id="mcq-result" class="mt-6 hidden">
-                            <div class="divider"></div>
+                        <div id="mcq-result" class="mt-8 hidden">
+                            <div class="divider" style="border-color: #f59e0b; border-width: 3px;"></div>
                             <div class="space-y-6">
-                                <h3 class="text-xl font-bold">Câu hỏi trắc nghiệm</h3>
+                                <h3 class="text-3xl font-bold" style="font-family: 'Fredoka', sans-serif; color: #dc2626; text-shadow: 2px 2px 0px #fbbf24;">
+                                    <span class="text-3xl mr-2">📋</span>Câu hỏi trắc nghiệm
+                                </h3>
                                 <div id="mcq-questions" class="space-y-6"></div>
                             </div>
                         </div>
@@ -287,22 +327,26 @@
 
         <!-- Image Generation Tab -->
         <div id="image-tab" class="tab-content hidden">
-            <div class="max-w-4xl mx-auto">
-                <div class="card bg-base-100 shadow-xl">
-                    <div class="card-body">
-                        <h2 class="card-title text-3xl mb-4">
-                            <i class="fas fa-image text-secondary"></i>
-                            Tạo Ảnh Lịch Sử
-                        </h2>
-                        <p class="text-base-content/70 mb-6">
-                            Tạo ảnh truyện tranh về lịch sử Việt Nam với phong cách comics, trang phục truyền thống
-                        </p>
-                        
-                        <div class="alert alert-info mb-6">
-                            <i class="fas fa-shield-alt"></i>
+            <div class="max-w-5xl mx-auto">
+                <div class="card shadow-2xl rounded-3xl overflow-hidden" style="background: linear-gradient(135deg, #ffffff 0%, #fef3c7 100%); border: 4px solid #f59e0b;">
+                    <div class="card-body p-6">
+                        <div class="flex items-center gap-3 mb-6">
+                            <span class="text-5xl">🎨</span>
                             <div>
-                                <h3 class="font-bold">Quy tắc sử dụng</h3>
-                                <ul class="text-sm mt-2 list-disc list-inside">
+                                <h2 class="text-4xl font-bold" style="font-family: 'Fredoka', sans-serif; color: #dc2626; text-shadow: 2px 2px 0px #fbbf24;">
+                                    Tạo Ảnh Lịch Sử
+                                </h2>
+                                <p class="text-lg font-semibold mt-1" style="font-family: 'Nunito', sans-serif; color: #92400e;">
+                                    Tạo ảnh truyện tranh về lịch sử Việt Nam với phong cách comics, trang phục truyền thống
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="alert mb-6 rounded-2xl shadow-lg p-5" style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border: 3px solid #3b82f6;">
+                            <span class="text-3xl mr-3">🛡️</span>
+                            <div>
+                                <h3 class="font-bold text-xl mb-2" style="font-family: 'Fredoka', sans-serif; color: #1e40af;">Quy tắc sử dụng</h3>
+                                <ul class="text-base mt-2 list-disc list-inside font-semibold" style="font-family: 'Nunito', sans-serif; color: #1e3a8a;">
                                     <li>Chỉ tạo ảnh về lịch sử Việt Nam (nhân vật, sự kiện, triều đại)</li>
                                     <li>Nội dung phải giáo dục và phù hợp với học sinh</li>
                                     <li>Không tạo ảnh có nội dung bạo lực, không phù hợp, hoặc sai lệch lịch sử</li>
@@ -310,49 +354,52 @@
                             </div>
                         </div>
                         
-                        <form id="image-form" class="space-y-4">
+                        <form id="image-form" class="space-y-5">
                             <div class="form-control">
                                 <label class="label">
-                                    <span class="label-text font-semibold">Mô tả hình ảnh lịch sử Việt Nam</span>
+                                    <span class="label-text text-xl font-bold" style="font-family: 'Nunito', sans-serif; color: #dc2626;">🖼️ Mô tả hình ảnh lịch sử Việt Nam</span>
                                 </label>
                                 <textarea 
                                     id="image-prompt" 
-                                    placeholder="Ví dụ: Vua Quang Trung đang chỉ huy quân đội trong trận Ngọc Hồi - Đống Đa năm 1789, trang phục áo giáp truyền thống Việt Nam, phong cách truyện tranh giáo dục..."
-                                    class="textarea textarea-bordered h-32"
+                                    placeholder="💡 Ví dụ: Vua Quang Trung đang chỉ huy quân đội trong trận Ngọc Hồi - Đống Đa năm 1789, trang phục áo giáp truyền thống Việt Nam, phong cách truyện tranh giáo dục..."
+                                    class="textarea h-32 text-lg font-semibold rounded-2xl shadow-lg" 
+                                    style="font-family: 'Nunito', sans-serif; border: 3px solid #f59e0b; background: white;"
                                     required
                                     minlength="10"
                                 ></textarea>
                                 <label class="label">
-                                    <span class="label-text-alt text-base-content/60">
-                                        <i class="fas fa-info-circle mr-1"></i>
+                                    <span class="label-text-alt text-base font-semibold" style="font-family: 'Nunito', sans-serif; color: #92400e;">
+                                        <span class="text-lg mr-1">💡</span>
                                         Mô tả chi tiết về nhân vật lịch sử, sự kiện, trang phục truyền thống Việt Nam, bối cảnh lịch sử...
                                     </span>
                                 </label>
                             </div>
                             
-                            <button type="submit" class="btn btn-secondary w-full">
-                                <i class="fas fa-magic mr-2"></i>
+                            <button type="submit" class="btn w-full text-xl font-bold py-4 rounded-2xl shadow-2xl transform hover:scale-105 transition-all" style="font-family: 'Fredoka', sans-serif; background: linear-gradient(135deg, #dc2626 0%, #ea580c 100%); color: white; border: 3px solid #fbbf24;">
+                                <span class="text-2xl mr-2">✨</span>
                                 Tạo Ảnh
                             </button>
                         </form>
 
-                        <div id="image-result" class="mt-6 hidden">
-                            <div class="divider"></div>
-                            <div class="space-y-4">
-                                <h3 class="text-xl font-bold">Kết quả</h3>
+                        <div id="image-result" class="mt-8 hidden">
+                            <div class="divider" style="border-color: #f59e0b; border-width: 3px;"></div>
+                            <div class="space-y-5">
+                                <h3 class="text-3xl font-bold" style="font-family: 'Fredoka', sans-serif; color: #dc2626; text-shadow: 2px 2px 0px #fbbf24;">
+                                    <span class="text-3xl mr-2">🎉</span>Kết quả
+                                </h3>
                                 <div class="flex justify-center">
-                                    <div class="card bg-base-200 shadow-lg max-w-2xl w-full">
-                                        <figure class="p-4">
-                                            <img id="generated-image" src="" alt="Generated image" class="rounded-lg w-full h-auto" />
+                                    <div class="card shadow-2xl max-w-2xl w-full rounded-3xl overflow-hidden" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 4px solid #f59e0b;">
+                                        <figure class="p-5">
+                                            <img id="generated-image" src="" alt="Generated image" class="rounded-2xl w-full h-auto shadow-xl" style="border: 3px solid #f59e0b;" />
                                         </figure>
-                                        <div class="card-body">
-                                            <p class="text-sm text-base-content/70">
-                                                <i class="fas fa-quote-left mr-2"></i>
+                                        <div class="card-body p-5">
+                                            <p class="text-base font-semibold" style="font-family: 'Nunito', sans-serif; color: #92400e;">
+                                                <span class="text-xl mr-2">💭</span>
                                                 <span id="image-prompt-display"></span>
                                             </p>
                                             <div class="card-actions justify-end mt-4">
-                                                <button onclick="downloadImage()" class="btn btn-sm btn-primary">
-                                                    <i class="fas fa-download mr-2"></i>
+                                                <button onclick="downloadImage()" class="btn text-lg font-bold px-6 rounded-2xl shadow-lg transform hover:scale-105 transition-all" style="font-family: 'Fredoka', sans-serif; background: linear-gradient(135deg, #dc2626 0%, #ea580c 100%); color: white; border: 3px solid #fbbf24;">
+                                                    <span class="text-xl mr-2">⬇️</span>
                                                     Tải Ảnh
                                                 </button>
                                             </div>
@@ -369,18 +416,22 @@
 
     <!-- Loading Modal -->
     <dialog id="loading-modal" class="modal">
-        <div class="modal-box text-center">
-            <span class="loading loading-spinner loading-lg text-primary"></span>
-            <p class="mt-4 text-lg font-semibold">Đang xử lý<span class="loading-dots"></span></p>
-            <p class="text-sm text-base-content/70 mt-2">Vui lòng đợi trong giây lát</p>
+        <div class="modal-box text-center rounded-3xl shadow-2xl overflow-hidden" style="background: linear-gradient(135deg, #ffffff 0%, #fef3c7 100%); border: 4px solid #f59e0b;">
+            <div class="text-6xl mb-4 animate-spin">⏳</div>
+            <p class="mt-4 text-2xl font-bold" style="font-family: 'Fredoka', sans-serif; color: #dc2626;">
+                Đang xử lý<span class="loading-dots"></span>
+            </p>
+            <p class="text-lg font-semibold mt-2" style="font-family: 'Nunito', sans-serif; color: #92400e;">
+                Vui lòng đợi trong giây lát
+            </p>
         </div>
     </dialog>
 
     <!-- Error Toast -->
     <div id="error-toast" class="toast toast-top toast-end hidden">
-        <div class="alert alert-error">
-            <i class="fas fa-exclamation-circle"></i>
-            <span id="error-message"></span>
+        <div class="alert rounded-2xl shadow-2xl p-4" style="background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); border: 3px solid #dc2626;">
+            <span class="text-2xl mr-2">⚠️</span>
+            <span id="error-message" class="font-bold text-lg" style="font-family: 'Nunito', sans-serif; color: #991b1b;"></span>
         </div>
     </div>
 
